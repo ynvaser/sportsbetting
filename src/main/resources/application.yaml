@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: sportsbetting
+  jpa:
+    properties:
+      hibernate:
+        physical_naming_strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+
+resilience4j:
+  ratelimiter:
+    instances:
+      openF1ClientSessions:
+        limitForPeriod: 2
+        limitRefreshPeriod: 1s
+        timeoutDuration: 1m
+      openF1ClientDrivers:
+        limitForPeriod: 2
+        limitRefreshPeriod: 1s
+        timeoutDuration: 1m
