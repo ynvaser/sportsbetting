@@ -24,7 +24,7 @@ public class BettingService {
     private final SelectionRepository selectionRepository;
 
     @Transactional
-    public void makeBet(Long userId, BigDecimal amount, String eventId, String selectionId) {
+    public boolean makeBet(Long userId, BigDecimal amount, String eventId, String selectionId) {
         UserEntity user = userRepository.findById(userId).orElse(createUser(userId));
         if (user.getEurBalance().compareTo(amount) >= 0) {
             SourceExternalIdKey eventKey = SourceExternalIdKey.fromString(eventId);
@@ -42,8 +42,10 @@ public class BettingService {
                 user.setEurBalance(user.getEurBalance().subtract(amount));
                 userRepository.save(user);
                 betRepository.save(betEntity);
+                return true;
             }
         }
+        return false;
     }
 
     private UserEntity createUser(Long userId) {

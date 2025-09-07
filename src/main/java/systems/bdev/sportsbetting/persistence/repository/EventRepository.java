@@ -1,9 +1,11 @@
 package systems.bdev.sportsbetting.persistence.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import systems.bdev.sportsbetting.persistence.entity.EventEntity;
 import systems.bdev.sportsbetting.persistence.entity.SourceExternalIdKey;
 
@@ -15,4 +17,14 @@ public interface EventRepository extends JpaRepository<EventEntity, SourceExtern
     List<EventEntity> findByOptionalFilters(@Param("sessionType") String sessionType,
                                             @Param("yearValue") Integer year,
                                             @Param("country") String country);
+
+    @Modifying
+    @Transactional
+    @Query(
+            value = "UPDATE events SET winner_external_id = :winnerExternalId WHERE source = :source AND external_id = :eventExternalId",
+            nativeQuery = true)
+    int updateWinner(
+            @Param("source") String source,
+            @Param("eventExternalId") String eventExternalId,
+            @Param("winnerExternalId") String winnerExternalId);
 }

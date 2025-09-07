@@ -8,18 +8,22 @@ import org.springframework.web.bind.annotation.RestController;
 import systems.bdev.sportsbetting.service.OutcomeService;
 
 @RestController
-@RequestMapping("/api/betting")
+@RequestMapping("/api/outcome")
 @AllArgsConstructor
 public class OutcomeController {
     private final OutcomeService outcomeService;
 
-    @PostMapping
-    public void finalizeEvent(
+    @PostMapping("/finalize")
+    public String finalizeEvent(
             @RequestParam String eventId,
             @RequestParam String selectionId) {
         if (!eventId.isBlank() && !selectionId.isBlank()) {
-            outcomeService.finalizeOutcome(eventId, selectionId);
+            boolean success = outcomeService.finalizeOutcome(eventId, selectionId);
+            if (success) {
+                return "SUCCESS";
+            }
         }
+        return "FAILURE";
     }
 }
 

@@ -10,7 +10,7 @@ import systems.bdev.sportsbetting.service.EventService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/events")
+@RequestMapping("/api/event")
 public class EventController {
 
     private final EventService eventService;
@@ -19,7 +19,7 @@ public class EventController {
         this.eventService = eventService;
     }
 
-    @GetMapping
+    @GetMapping("/list")
     public List<EventDto> getEvents(
             @RequestParam(required = false) String sessionType,
             @RequestParam(required = false) Integer year,

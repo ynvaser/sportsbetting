@@ -20,7 +20,7 @@ public class OutcomeService {
     private final EventSelectionLinkRepository eventSelectionLinkRepository;
 
     @Transactional
-    public void finalizeOutcome(String eventId, String selectionId) {
+    public boolean finalizeOutcome(String eventId, String selectionId) {
         SourceExternalIdKey eventKey = SourceExternalIdKey.fromString(eventId);
         SourceExternalIdKey selectionKey = SourceExternalIdKey.fromString(selectionId);
         Optional<EventEntity> maybeEvent = eventRepository.findById(eventKey);
@@ -30,8 +30,7 @@ public class OutcomeService {
             if (maybeSelection.isPresent()) {
                 SelectionEntity selection = maybeSelection.get();
                 if (event.getSelectionEntities().contains(selection)) {
-                    event.setWinner(selection);
-                    eventRepository.save(event);
+                    eventRepository.updateWinner(eventKey.getSource(), eventKey.getExternalId(), selectionKey.getExternalId());
                     Set<BetEntity> bets = betRepository.findByEventSourceAndEventExternalIdAndSelectionSourceAndSelectionExternalId(
                             eventKey.getSource(),
                             eventKey.getExternalId(),
@@ -49,8 +48,10 @@ public class OutcomeService {
                         winner.setEurBalance(winner.getEurBalance().add(winningBet.getBetAmount().multiply(BigDecimal.valueOf(eventSelectionLink.getOdds()))));
                         userRepository.save(winner);
                     }
+                    return true;
                 }
             }
         }
+        return false;
     }
 }

@@ -17,3 +17,5 @@ resilience4j:
         limitForPeriod: 2
         limitRefreshPeriod: 1s
         timeoutDuration: 1m
+server:
+  port: 8095
